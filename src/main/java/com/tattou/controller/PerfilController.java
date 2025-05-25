@@ -13,7 +13,7 @@ import com.tattou.model.Usuario;
 import com.tattou.service.UsuarioService;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class PerfilController {
 
     private final UsuarioService usuarioService;

@@ -22,12 +22,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwUtil jwUtil;
     private final CustomUserDetailsService customUserDetailsService;
 
-    // Lista de rutas públicas
+    // Rutas públicas
     private static final List<String> PUBLIC_PATHS = List.of(
-        "/auth/login",
-        "/usuarios/registro",
-        "/clientes/registro",
-        "/tatuadores/registro"
+            "/auth/login",
+            "/usuarios/registro",
+            "/clientes/registro",
+            "/tatuadores/registro"
     );
 
     public JwtAuthenticationFilter(JwUtil jwUtil, CustomUserDetailsService customUserDetailsService) {
@@ -36,37 +36,42 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
-        @NonNull FilterChain filterChain)
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
-        System.out.println("🔎 Authorization: " + request.getHeader("Authorization"));
         String path = request.getRequestURI();
 
-        // Si la ruta es pública, continúa sin autenticar
+        // 1️⃣ No exigir autenticación en rutas públicas
         if (PUBLIC_PATHS.contains(path)) {
             filterChain.doFilter(request, response);
             return;
         }
 
+        // 2️⃣ Extraer y validar el token
         String header = request.getHeader("Authorization");
-
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             if (jwUtil.validateToken(token)) {
                 String email = jwUtil.getSubject(token);
-                UserDetails detallesUser = customUserDetailsService.loadUserByUsername(email);
 
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        detallesUser, null, detallesUser.getAuthorities());
+                // 3️⃣ Cargar usuario y crear Authentication con authorities
+                UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
-                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                auth.setAuthenticated(true);
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                System.out.println("Authorities: " + userDetails.getAuthorities());
 
-                System.out.println("Usuario autenticado: " + detallesUser.getUsername());
-                System.out.println("Usuario autenticado en el filtro: " + email);
-                System.out.println("Authentication establecida: " + auth.getPrincipal());
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,                       // principal
+                                null,                              // credentials
+                                userDetails.getAuthorities());     // roles / authorities
+
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request));
+
+                // 4️⃣ Guardar autenticación en el contexto
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 
