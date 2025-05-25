@@ -1,25 +1,34 @@
 package com.tattou.security;
 
 import java.io.IOException;
+import java.util.List;
 
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.GenericFilter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class JwtAuthenticationFilter extends GenericFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwUtil jwUtil;
-
     private final CustomUserDetailsService customUserDetailsService;
+
+    // Lista de rutas públicas
+    private static final List<String> PUBLIC_PATHS = List.of(
+        "/auth/login",
+        "/usuarios/registro",
+        "/clientes/registro",
+        "/tatuadores/registro"
+    );
 
     public JwtAuthenticationFilter(JwUtil jwUtil, CustomUserDetailsService customUserDetailsService) {
         this.jwUtil = jwUtil;
@@ -27,35 +36,40 @@ public class JwtAuthenticationFilter extends GenericFilter {
     }
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-            throws IOException, ServletException {
-        
-        HttpServletRequest request = (HttpServletRequest) req;
-        // Se busca la cabecera que contiene la info de la autorizacion
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+        @NonNull FilterChain filterChain)
+            throws ServletException, IOException {
+
+        System.out.println("🔎 Authorization: " + request.getHeader("Authorization"));
+        String path = request.getRequestURI();
+
+        // Si la ruta es pública, continúa sin autenticar
+        if (PUBLIC_PATHS.contains(path)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String header = request.getHeader("Authorization");
 
-        // Debe comenzar por Bearer, seguido del token
         if (header != null && header.startsWith("Bearer ")) {
-            // Se obtiene el token, que comienza despues del Bearer
             String token = header.substring(7);
             if (jwUtil.validateToken(token)) {
                 String email = jwUtil.getSubject(token);
-                var detallesUser = customUserDetailsService.loadUserByUsername(email);
+                UserDetails detallesUser = customUserDetailsService.loadUserByUsername(email);
 
-                // Aqui se crea la autenticacion con el usuario validado y sus roles, no hay contraseña 
-                // ya que se valida con el token
-                var auth = new UsernamePasswordAuthenticationToken(detallesUser, 
-                    null, detallesUser.getAuthorities());
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                        detallesUser, null, detallesUser.getAuthorities());
 
                 auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                // Se especifica a la app que considere al usuario como autorizado
+                auth.setAuthenticated(true);
                 SecurityContextHolder.getContext().setAuthentication(auth);
+
+                System.out.println("Usuario autenticado: " + detallesUser.getUsername());
+                System.out.println("Usuario autenticado en el filtro: " + email);
+                System.out.println("Authentication establecida: " + auth.getPrincipal());
             }
         }
-        
-        chain.doFilter(req, res);
+
+        filterChain.doFilter(request, response);
     }
-
-    
-
 }

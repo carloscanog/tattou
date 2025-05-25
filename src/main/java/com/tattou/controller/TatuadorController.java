@@ -65,36 +65,6 @@ public class TatuadorController {
         return tatuadorService.obtenerTatuadores();
     }
 
-    @GetMapping("/{id}/tatuajes")
-    public List<Tatuaje> obtenerTatuajesPorAutorId(@PathVariable Long id) {
-        return tatuajeService.obtenerPorAutorId(id);
-    }
-
-    @GetMapping("/{id}/disenyos")
-    public List<Disenyo> obtenerDisenyosPorAutorId(@PathVariable Long id) {
-        return disenyoService.obtenerDisenyosPorAutorId(id);
-    }
-
-    @GetMapping("/{id}/pedidos")
-    public List<Pedido> obtenerPedidosPorVendedorId(@PathVariable Long vendedorId) {
-        return pedidoService.obtenerPedidosPorVendedorId(vendedorId);
-    }
-
-    @GetMapping("/{id}")
-    public Optional<Tatuador> obtenerPorId(@PathVariable Long id) {
-        return tatuadorService.obtenerTatuadorPorId(id);
-    }
-
-    @GetMapping("/{vendedorId}/pedidos/{pedidoId}")
-    public Optional<Pedido> obtenerPedidoPorIdYVendedorId(@PathVariable Long vendedorId, @PathVariable Long pedidoId) {
-        return pedidoService.obtenerPedidoPorIdYVendedorId(pedidoId, vendedorId);
-    }
-
-    @PostMapping
-    public Tatuador crear(@RequestBody Tatuador tatuador) {
-        return tatuadorService.crearTatuador(tatuador);
-    }
-
     @PostMapping("/registro")
     public ResponseEntity<Tatuador> completarRegistroTatuador(@Valid @RequestBody TatuadorRegistroRequest dto) {
         Usuario usuario = usuarioService.obtenerUsuarioPorId(dto.getUsuarioId())
@@ -123,6 +93,36 @@ public class TatuadorController {
 
         Tatuador guardado = tatuadorService.crearTatuador(tatuador);
         return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
+    }
+
+    @GetMapping("/{id}/tatuajes")
+    public List<Tatuaje> obtenerTatuajesPorAutorId(@PathVariable Long id) {
+        return tatuajeService.obtenerPorAutorId(id);
+    }
+
+    @GetMapping("/{id}/disenyos")
+    public List<Disenyo> obtenerDisenyosPorAutorId(@PathVariable Long id) {
+        return disenyoService.obtenerDisenyosPorAutorId(id);
+    }
+
+    @GetMapping("/{id}/pedidos")
+    public List<Pedido> obtenerPedidosPorVendedorId(@PathVariable Long vendedorId) {
+        return pedidoService.obtenerPedidosPorVendedorId(vendedorId);
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Tatuador> obtenerPorId(@PathVariable Long id) {
+        return tatuadorService.obtenerTatuadorPorId(id);
+    }
+
+    @GetMapping("/{vendedorId}/pedidos/{pedidoId}")
+    public Optional<Pedido> obtenerPedidoPorIdYVendedorId(@PathVariable Long vendedorId, @PathVariable Long pedidoId) {
+        return pedidoService.obtenerPedidoPorIdYVendedorId(pedidoId, vendedorId);
+    }
+
+    @PostMapping
+    public Tatuador crear(@RequestBody Tatuador tatuador) {
+        return tatuadorService.crearTatuador(tatuador);
     }
 
     @DeleteMapping("/{id}")

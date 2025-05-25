@@ -1,5 +1,6 @@
 package com.tattou.security;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
@@ -14,7 +15,8 @@ import io.jsonwebtoken.security.Keys;
 public class JwUtil {
 
     private final String jwtIssuer = "tattou-app";
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final String SECRET = "una-clave-muy-secreta-para-jwt-con-al-menos-32-caracteres";
+    private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
     public String generateToken(String subject) {
         return Jwts.builder()
@@ -43,5 +45,4 @@ public class JwUtil {
             return false;
         }
     }
-
 }

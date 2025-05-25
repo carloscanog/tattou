@@ -20,14 +20,19 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         return http
-            // Se desactiva Cross-Site Request Forgery, ya que con JWT no se almacenan sesiones
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/usuarios/registro", "/api/clientes/registro", "/api/tatuadores/registro", "/api/auth/login").permitAll()
-                .anyRequest().authenticated())
-            // Se añade el filtro JWT antes del filtro que gestiona user y password, ya que no se usa
+                .requestMatchers(
+                    "/", "/login", "/index.html", "/favicon.ico",
+                    "/**/*.js", "/**/*.css", "/**/*.ico",
+                    "/polyfills-*.js", "/assets/**",
+                    "/usuarios/registro", "/clientes/registro", "/tatuadores/registro",
+                    "/auth/login", "/me"
+                ).permitAll()
+                .anyRequest().authenticated()
+            )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
     }

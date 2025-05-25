@@ -54,26 +54,6 @@ public class ClienteController {
         return clienteService.obtenerClientes();
     }
 
-    @GetMapping("/{id}/pedidos")
-    public List<Pedido> obtenerPedidosPorCompradorId(@PathVariable Long id) {
-        return pedidoService.obtenerPedidosPorCompradorId(id);
-    }
-
-    @GetMapping("/{id}")
-    public Optional<Cliente> obtenerClientePorId(@PathVariable Long id) {
-        return clienteService.obtenerClientePorId(id);
-    }
-
-    @GetMapping("/{compradordI}/pedidos/{pedidoId}")
-    public Optional<Pedido> obtenerPedidoPorIdYCompradorId(@PathVariable Long compradorId, @PathVariable Long pedidoId) {
-        return pedidoService.obtenerPedidoPorIdYCompradorId(pedidoId, compradorId);
-    }
-
-    @PostMapping
-    public Cliente crearCliente(@RequestBody Cliente cliente) {
-        return clienteService.crearCliente(cliente);
-    }
-
     @PostMapping("/registro")
     public ResponseEntity<Cliente> completarRegistroCliente(@Valid @RequestBody ClienteRegistroRequest dto) {
         Usuario usuario = usuarioService.obtenerUsuarioPorId(dto.getUsuarioId())
@@ -98,6 +78,26 @@ public class ClienteController {
 
         Cliente guardado = clienteService.crearCliente(cliente);
         return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
+    }
+
+    @GetMapping("/{id}/pedidos")
+    public List<Pedido> obtenerPedidosPorCompradorId(@PathVariable Long id) {
+        return pedidoService.obtenerPedidosPorCompradorId(id);
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Cliente> obtenerClientePorId(@PathVariable Long id) {
+        return clienteService.obtenerClientePorId(id);
+    }
+
+    @GetMapping("/{compradorId}/pedidos/{pedidoId}")
+    public Optional<Pedido> obtenerPedidoPorIdYCompradorId(@PathVariable Long compradorId, @PathVariable Long pedidoId) {
+        return pedidoService.obtenerPedidoPorIdYCompradorId(pedidoId, compradorId);
+    }
+
+    @PostMapping
+    public Cliente crearCliente(@RequestBody Cliente cliente) {
+        return clienteService.crearCliente(cliente);
     }
 
     @DeleteMapping("/{id}")

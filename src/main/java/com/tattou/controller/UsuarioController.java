@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,16 +44,6 @@ public class UsuarioController {
     public List<Usuario> obtenerTodos() {
         return usuarioService.obtenerUsuarios();
     }
-    
-    @GetMapping("/{id}")
-    public Optional<Usuario> obtenerPorId(@PathVariable Long id) {
-        return usuarioService.obtenerUsuarioPorId(id);
-    }
-
-    @PostMapping
-    public Usuario crear(@RequestBody Usuario usuario) {
-        return usuarioService.crearUsuario(usuario);
-    }
 
     @PostMapping("/registro")
     public ResponseEntity<Usuario> registrarUsuario(@Valid @RequestBody UsuarioRegistroRequest dto) {
@@ -68,10 +60,46 @@ public class UsuarioController {
         Usuario guardado = usuarioService.crearUsuario(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
     }
+    
+    @GetMapping("/{id}:\\d+")
+    public Optional<Usuario> obtenerPorId(@PathVariable Long id) {
+        return usuarioService.obtenerUsuarioPorId(id);
+    }
+
+    @PostMapping
+    public Usuario crear(@RequestBody Usuario usuario) {
+        return usuarioService.crearUsuario(usuario);
+    }
 
     @DeleteMapping("/{id}")
     public void eliminar(@PathVariable Long id) {
         usuarioService.eliminarUsuarioPorId(id);
     }
+
+    // @GetMapping("/me")
+    // public ResponseEntity<?> getUsuarioActual() {
+    //     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+    //     if (auth == null) {
+    //         return ResponseEntity.status(401).body("No hay autenticación");
+    //     }
+
+    //     if (!auth.isAuthenticated()) {
+    //         return ResponseEntity.status(403).body("No estás autenticado");
+    //     }
+
+    //     System.out.println("🧠 Principal: " + auth.getPrincipal());
+    //     System.out.println("👤 Nombre: " + auth.getName());
+    //     System.out.println("🔑 Authorities: " + auth.getAuthorities());
+
+    //     return ResponseEntity.ok("Autenticado como: " + auth.getName());
+    // }
+
+    // @GetMapping("/me")
+    // public ResponseEntity<?> testMe() {
+    //     System.out.println("💬 SE EJECUTA EL MÉTODO /me");
+    //     return ResponseEntity.ok("El método /me se ejecutó correctamente.");
+    // }
+
 
 }
