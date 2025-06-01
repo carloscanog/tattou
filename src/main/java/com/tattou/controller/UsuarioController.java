@@ -45,6 +45,10 @@ public class UsuarioController {
 
     @PostMapping("/registro")
     public ResponseEntity<Usuario> registrarUsuario(@Valid @RequestBody UsuarioRegistroRequest dto) {
+        // Lo primero es comprobar que no haya ningun usuario con el mismo email registrado
+        if (usuarioService.obtenerUsuarioPorEmail(dto.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Este email ya está registrado");
+        }
         Usuario usuario = new Usuario();
         usuario.setNombre(dto.getNombre());
         usuario.setApellidos(dto.getApellidos());
@@ -59,45 +63,14 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
     }
     
-    @GetMapping("/{id}:\\d+")
+    @GetMapping("/{id}")
     public Optional<Usuario> obtenerPorId(@PathVariable Long id) {
         return usuarioService.obtenerUsuarioPorId(id);
-    }
-
-    @PostMapping
-    public Usuario crear(@RequestBody Usuario usuario) {
-        return usuarioService.crearUsuario(usuario);
     }
 
     @DeleteMapping("/{id}")
     public void eliminar(@PathVariable Long id) {
         usuarioService.eliminarUsuarioPorId(id);
     }
-
-    // @GetMapping("/me")
-    // public ResponseEntity<?> getUsuarioActual() {
-    //     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-    //     if (auth == null) {
-    //         return ResponseEntity.status(401).body("No hay autenticación");
-    //     }
-
-    //     if (!auth.isAuthenticated()) {
-    //         return ResponseEntity.status(403).body("No estás autenticado");
-    //     }
-
-    //     System.out.println("🧠 Principal: " + auth.getPrincipal());
-    //     System.out.println("👤 Nombre: " + auth.getName());
-    //     System.out.println("🔑 Authorities: " + auth.getAuthorities());
-
-    //     return ResponseEntity.ok("Autenticado como: " + auth.getName());
-    // }
-
-    // @GetMapping("/me")
-    // public ResponseEntity<?> testMe() {
-    //     System.out.println("💬 SE EJECUTA EL MÉTODO /me");
-    //     return ResponseEntity.ok("El método /me se ejecutó correctamente.");
-    // }
-
 
 }
