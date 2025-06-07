@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.tattou.dto.UsuarioRegistroRequest;
+import com.tattou.dto.UsuarioRegistroResponse;
 import com.tattou.model.Usuario;
 import com.tattou.service.UsuarioService;
 
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/usuarios")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UsuarioController {
 
     private final PasswordEncoder passwordEncoder;
@@ -44,7 +45,8 @@ public class UsuarioController {
     }
 
     @PostMapping("/registro")
-    public ResponseEntity<Usuario> registrarUsuario(@Valid @RequestBody UsuarioRegistroRequest dto) {
+    @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
+    public ResponseEntity<UsuarioRegistroResponse> registrarUsuario(@Valid @RequestBody UsuarioRegistroRequest dto) {
         // Lo primero es comprobar que no haya ningun usuario con el mismo email registrado
         if (usuarioService.obtenerUsuarioPorEmail(dto.getEmail()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Este email ya está registrado");
@@ -60,7 +62,7 @@ public class UsuarioController {
         }
 
         Usuario guardado = usuarioService.crearUsuario(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new UsuarioRegistroResponse(guardado.getId(), guardado.getEmail()));
     }
     
     @GetMapping("/{id}")

@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // 1️⃣ No exigir autenticación en rutas públicas
-        if (PUBLIC_PATHS.contains(path)) {
+        if (PUBLIC_PATHS.stream().anyMatch(path::startsWith)) {
             filterChain.doFilter(request, response);
             return;
         }

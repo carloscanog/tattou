@@ -30,7 +30,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/clientes")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ClienteController {
 
     private final ClienteService clienteService;
@@ -55,6 +55,7 @@ public class ClienteController {
     }
 
     @PostMapping("/registro")
+    @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
     public ResponseEntity<Cliente> completarRegistroCliente(@Valid @RequestBody ClienteRegistroRequest dto) {
         Usuario usuario = usuarioService.obtenerUsuarioPorId(dto.getUsuarioId())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
@@ -68,12 +69,7 @@ public class ClienteController {
         
         Cliente cliente = new Cliente();
         cliente.setUsuario(usuario);
-        // Se sustituyen las posibles comas por no caracteres
-        String interesesDto = dto.getIntereses().trim().replace(",", " ")
-            .replace(".", " ").replace("  ", " ").replace("  ", " ");
-        // Se separa la cadena recogida por espacios, y el array generado se convierte en una lista
-        List<String> intereses = new ArrayList<String>(Arrays.asList(interesesDto.split(" ")));
-        cliente.setIntereses(intereses);
+        cliente.setIntereses(dto.getIntereses());
         cliente.setCiudad(dto.getCiudad());
 
         Cliente guardado = clienteService.crearCliente(cliente);

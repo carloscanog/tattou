@@ -34,7 +34,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/tatuadores")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200")
 public class TatuadorController {
 
     private final TatuadorService tatuadorService;
@@ -66,6 +66,7 @@ public class TatuadorController {
     }
 
     @PostMapping("/registro")
+    @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
     public ResponseEntity<Tatuador> completarRegistroTatuador(@Valid @RequestBody TatuadorRegistroRequest dto) {
         Usuario usuario = usuarioService.obtenerUsuarioPorId(dto.getUsuarioId())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
