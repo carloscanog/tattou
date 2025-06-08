@@ -1,6 +1,7 @@
 package com.tattou.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -46,10 +47,12 @@ public class UsuarioController {
 
     @PostMapping("/registro")
     @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
-    public ResponseEntity<UsuarioRegistroResponse> registrarUsuario(@Valid @RequestBody UsuarioRegistroRequest dto) {
+    public ResponseEntity<?> registrarUsuario(@Valid @RequestBody UsuarioRegistroRequest dto) {
         // Lo primero es comprobar que no haya ningun usuario con el mismo email registrado
         if (usuarioService.obtenerUsuarioPorEmail(dto.getEmail()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Este email ya está registrado");
+            return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of("message", "Este email ya está registrado"));
         }
         Usuario usuario = new Usuario();
         usuario.setNombre(dto.getNombre());
