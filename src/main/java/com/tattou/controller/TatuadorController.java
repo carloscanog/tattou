@@ -81,13 +81,7 @@ public class TatuadorController {
         Tatuador tatuador = new Tatuador();
         tatuador.setUsuario(usuario);
         tatuador.setBiografia(dto.getBiografia());
-
-        // Se sustituyen las posibles comas por no caracteres
-        String estilosDto = dto.getEstilos().replace(",", " ").replace(".", " ")
-            .replace("  ", " ").replace("  ", " ");
-        // Se separa la cadena recogida por espacios, y el array generado se convierte en una lista
-        List<String> estilos = new ArrayList<String>(Arrays.asList(estilosDto.split(" ")));
-        tatuador.setEstilos(estilos);
+        tatuador.setEstilos(dto.getEstilos());
         tatuador.setInstagram(dto.getInstagram());
         tatuador.setTiktok(dto.getTiktok());
         tatuador.setUbicacion(dto.getUbicacion());

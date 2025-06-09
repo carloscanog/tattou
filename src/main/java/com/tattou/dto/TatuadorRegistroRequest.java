@@ -1,6 +1,9 @@
 package com.tattou.dto;
 
+import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,8 +18,8 @@ public class TatuadorRegistroRequest {
     @NotBlank(message = "La ubicación es obligatoria")
     private String ubicacion;
 
-    @NotBlank(message = "La lista de estilos es obligatoria")
-    private String estilos;
+    @NotEmpty(message = "La lista de estilos es obligatoria")
+    private List<String> estilos;
 
     private String instagram;
 
