@@ -78,4 +78,9 @@ public class UsuarioController {
         usuarioService.eliminarUsuarioPorId(id);
     }
 
+    @DeleteMapping("/email/{email}")
+    public void eliminarUsuarioPorEmail(@PathVariable String email) {
+        usuarioService.eliminarUsuarioPorEmail(email);
+    }
+
 }

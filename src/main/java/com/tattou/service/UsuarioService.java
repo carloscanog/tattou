@@ -17,4 +17,10 @@ public interface UsuarioService {
 
     void eliminarUsuarioPorId(Long id);
 
+    void eliminarUsuarioPorEmail(String email);
+
+    boolean esRegistradoComoTatuador(Usuario usuario);
+
+    boolean esRegistradoComoCliente(Usuario usuario);
+
 }

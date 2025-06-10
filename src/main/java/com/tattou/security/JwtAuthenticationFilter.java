@@ -27,7 +27,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/auth/login",
             "/usuarios/registro",
             "/clientes/registro",
-            "/tatuadores/registro"
+            "/tatuadores/registro",
+            "/usuarios/email/**"
     );
 
     public JwtAuthenticationFilter(JwUtil jwUtil, CustomUserDetailsService customUserDetailsService) {

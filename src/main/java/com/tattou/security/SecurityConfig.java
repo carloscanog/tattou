@@ -34,7 +34,8 @@ public class SecurityConfig {
                     "/auth/login",
                     "/usuarios/registro",
                     "/clientes/registro",
-                    "/tatuadores/registro"
+                    "/tatuadores/registro",
+                    "/usuarios/email/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
