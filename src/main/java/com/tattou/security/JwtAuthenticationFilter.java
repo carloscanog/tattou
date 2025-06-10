@@ -27,7 +27,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/auth/login",
             "/usuarios/registro",
             "/clientes/registro",
-            "/tatuadores/registro"
+            "/tatuadores/registro",
+            "/usuarios/email/**"
     );
 
     public JwtAuthenticationFilter(JwUtil jwUtil, CustomUserDetailsService customUserDetailsService) {
@@ -44,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // 1️⃣ No exigir autenticación en rutas públicas
-        if (PUBLIC_PATHS.contains(path)) {
+        if (PUBLIC_PATHS.stream().anyMatch(path::startsWith)) {
             filterChain.doFilter(request, response);
             return;
         }
