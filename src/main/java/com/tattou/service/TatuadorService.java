@@ -13,7 +13,7 @@ public interface TatuadorService {
 
     Optional<Tatuador> obtenerTatuadorPorUsuarioId(Long usuarioId);
 
-    Tatuador crearTatuador(Tatuador tatuador);
+    Tatuador guardar(Tatuador tatuador);
 
     void eliminarTatuadorPorId(Long id);
 

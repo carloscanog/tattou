@@ -1,7 +1,5 @@
 package com.tattou.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -86,7 +85,7 @@ public class TatuadorController {
         tatuador.setTiktok(dto.getTiktok());
         tatuador.setUbicacion(dto.getUbicacion());
 
-        Tatuador guardado = tatuadorService.crearTatuador(tatuador);
+        Tatuador guardado = tatuadorService.guardar(tatuador);
         return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
     }
 
@@ -117,12 +116,24 @@ public class TatuadorController {
 
     @PostMapping
     public Tatuador crear(@RequestBody Tatuador tatuador) {
-        return tatuadorService.crearTatuador(tatuador);
+        return tatuadorService.guardar(tatuador);
     }
 
     @DeleteMapping("/{id}")
     public void eliminar(@PathVariable Long id) {
         tatuadorService.eliminarTatuadorPorId(id);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Tatuador> actualizarTatuador(@PathVariable Long id, @RequestBody Tatuador datos) {
+        Tatuador tatuador = tatuadorService.obtenerTatuadorPorId(id).get();
+        tatuador.setBiografia(datos.getBiografia());
+        tatuador.setUbicacion(datos.getUbicacion());
+        tatuador.setInstagram(datos.getInstagram());
+        tatuador.setTiktok(datos.getTiktok());
+        tatuador.setEstilos(datos.getEstilos());
+        return ResponseEntity.ok(tatuadorService.guardar(tatuador));
+    }
+
 
 }
