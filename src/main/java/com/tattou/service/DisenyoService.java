@@ -13,7 +13,7 @@ public interface DisenyoService {
 
     List<Disenyo> obtenerDisenyosPorAutorId(Long autorId);
 
-    Disenyo crearDisenyo(Disenyo disenyo);
+    Disenyo guardarDisenyo(Disenyo disenyo);
 
     void eliminarDisenyoPorId(Long id);
     
