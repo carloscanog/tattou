@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +34,7 @@ import com.tattou.service.UsuarioService;
 
 @RestController
 @RequestMapping("/tatuajes")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class TatuajeController  {
 
     private final TatuajeService tatuajeService;
@@ -70,7 +69,7 @@ public class TatuajeController  {
         tatuajeService.eliminarTatuajePorId(id);
     }
 
-    @PostMapping
+    @PostMapping("/nuevo")
     public ResponseEntity<?> crearTatuaje(
             @RequestParam("titulo") String titulo,
             @RequestParam("etiquetas") String etiquetasStr,
@@ -88,7 +87,7 @@ public class TatuajeController  {
                                     .collect(Collectors.toList());
 
         String nombreArchivo = UUID.randomUUID().toString() + "_" + imagen.getOriginalFilename();
-        Path rutaImagen = Paths.get("src/main/resources/static/uploads", nombreArchivo);
+        Path rutaImagen = Paths.get("src/main/resources/static/uploads/tatuajes", nombreArchivo);
 
         try {
             Files.copy(imagen.getInputStream(), rutaImagen, StandardCopyOption.REPLACE_EXISTING);
@@ -99,7 +98,7 @@ public class TatuajeController  {
         Tatuaje tatuaje = new Tatuaje();
         tatuaje.setTitulo(titulo);
         tatuaje.setEtiquetas(etiquetas);
-        tatuaje.setImagen("/uploads/tatuajes" + nombreArchivo);
+        tatuaje.setImagen("/uploads/tatuajes/" + nombreArchivo);
         tatuaje.setAutor(tatuador);
 
         Tatuaje guardado = tatuajeService.guardarTatuaje(tatuaje);
