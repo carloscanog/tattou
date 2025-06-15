@@ -44,20 +44,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        // 1️⃣ No exigir autenticación en rutas públicas
+        // No se exige autenticación en rutas públicas
         if (PUBLIC_PATHS.stream().anyMatch(path::startsWith)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 2️⃣ Extraer y validar el token
+        // Se extrae y valida el token
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             if (jwUtil.validateToken(token)) {
                 String email = jwUtil.getSubject(token);
 
-                // 3️⃣ Cargar usuario y crear Authentication con authorities
+                // Carga el usuario y crea una Authentication con authorities
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
                 System.out.println("Authorities: " + userDetails.getAuthorities());
@@ -71,7 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authentication.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // 4️⃣ Guardar autenticación en el contexto
+                // Guarda la autenticación en el contexto
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }

@@ -35,7 +35,7 @@ public class TatuadorServiceImpl implements TatuadorService {
     }
 
     @Override
-    public Tatuador crearTatuador(Tatuador tatuador) {
+    public Tatuador guardar(Tatuador tatuador) {
         return tatuadorRepository.save(tatuador);
     }
 

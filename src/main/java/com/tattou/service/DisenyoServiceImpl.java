@@ -33,7 +33,7 @@ public class DisenyoServiceImpl implements DisenyoService {
     }
 
     @Override
-    public Disenyo crearDisenyo(Disenyo disenyo) {
+    public Disenyo guardarDisenyo(Disenyo disenyo) {
         return disenyoRepository.save(disenyo);
     }
 

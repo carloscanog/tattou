@@ -42,7 +42,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public Usuario crearUsuario(Usuario usuario) {
+    public Usuario guardar(Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
 

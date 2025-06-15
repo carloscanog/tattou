@@ -64,7 +64,7 @@ public class UsuarioController {
             usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
 
-        Usuario guardado = usuarioService.crearUsuario(usuario);
+        Usuario guardado = usuarioService.guardar(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(new UsuarioRegistroResponse(guardado.getId(), guardado.getEmail()));
     }
     
