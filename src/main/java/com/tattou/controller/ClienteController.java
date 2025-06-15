@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -70,7 +71,7 @@ public class ClienteController {
         cliente.setIntereses(dto.getIntereses());
         cliente.setCiudad(dto.getCiudad());
 
-        Cliente guardado = clienteService.crearCliente(cliente);
+        Cliente guardado = clienteService.guardar(cliente);
         return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
     }
 
@@ -91,12 +92,20 @@ public class ClienteController {
 
     @PostMapping
     public Cliente crearCliente(@RequestBody Cliente cliente) {
-        return clienteService.crearCliente(cliente);
+        return clienteService.guardar(cliente);
     }
 
     @DeleteMapping("/{id}")
     public void eliminarClientePorId(@PathVariable Long id) {
         clienteService.eliminarClientePorId(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Cliente> actualizarCliente(@PathVariable Long id, @RequestBody Cliente datos) {
+        Cliente cliente = clienteService.obtenerClientePorId(id).get();
+        cliente.setCiudad(datos.getCiudad());
+        cliente.setIntereses(datos.getIntereses());
+        return ResponseEntity.ok(clienteService.guardar(cliente));
     }
 
 }

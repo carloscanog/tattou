@@ -43,6 +43,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Usuario guardar(Usuario usuario) {
+        if (usuario.getFotoPerfil() == null || usuario.getFotoPerfil().isBlank()) {
+            usuario.setFotoPerfil("/uploads/usuarios/default-avatar.svg");
+        }
         return usuarioRepository.save(usuario);
     }
 
