@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -71,7 +72,7 @@ public class PerfilController {
                     "instagram", tatuador.getInstagram(),
                     "tiktok", tatuador.getTiktok(),
                     "fotoPerfil", usuario.getFotoPerfil()
-                )
+                ), "usuarioId", usuario.getId()
             )); 
         } else if (usuarioService.esRegistradoComoCliente(usuario)) {
             Cliente cliente = clienteService.obtenerClientePorUsuarioId(usuario.getId()).get();
@@ -85,7 +86,7 @@ public class PerfilController {
                     "ciudad", cliente.getCiudad(),
                     "intereses", cliente.getIntereses(),
                     "fotoPerfil", usuario.getFotoPerfil()
-                )
+                ), "usuarioId", usuario.getId()
             ));
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("El usuario no tiene un rol asignado.");
@@ -130,4 +131,45 @@ public class PerfilController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar la imagen");
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUsuarioActual(@PathVariable Long id) {
+        Usuario usuario = usuarioService.obtenerUsuarioPorId(id).get();
+
+        if (usuarioService.esRegistradoComoTatuador(usuario)) {
+            Tatuador tatuador = tatuadorService.obtenerTatuadorPorUsuarioId(usuario.getId()).get();
+            return ResponseEntity.ok(Map.of(
+                "rol", "TATUADOR",
+                "perfil", Map.of(
+                    "id", tatuador.getId(),
+                    "email", usuario.getEmail(),
+                    "nombre", usuario.getNombre(),
+                    "apellidos", usuario.getApellidos(),
+                    "biografia", tatuador.getBiografia(),
+                    "ubicacion", tatuador.getUbicacion(),
+                    "estilos", tatuador.getEstilos(),
+                    "instagram", tatuador.getInstagram(),
+                    "tiktok", tatuador.getTiktok(),
+                    "fotoPerfil", usuario.getFotoPerfil()
+                ), "usuarioId", usuario.getId()
+            )); 
+        } else if (usuarioService.esRegistradoComoCliente(usuario)) {
+            Cliente cliente = clienteService.obtenerClientePorUsuarioId(usuario.getId()).get();
+            return ResponseEntity.ok(Map.of(
+                "rol", "CLIENTE",
+                "perfil", Map.of(
+                    "id", cliente.getId(),
+                    "email", usuario.getEmail(),
+                    "nombre", usuario.getNombre(),
+                    "apellidos", usuario.getApellidos(),
+                    "ciudad", cliente.getCiudad(),
+                    "intereses", cliente.getIntereses(),
+                    "fotoPerfil", usuario.getFotoPerfil()
+                ), "usuarioId", usuario.getId()
+            ));
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("El usuario no tiene un rol asignado.");
+        }
+    }
+
 }
