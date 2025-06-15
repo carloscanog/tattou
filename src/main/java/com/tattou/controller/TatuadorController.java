@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.tattou.dto.TatuadorRegistroRequest;
-import com.tattou.model.Disenyo;
 import com.tattou.model.Pedido;
 import com.tattou.model.Tatuador;
 import com.tattou.model.Tatuaje;
@@ -90,13 +89,13 @@ public class TatuadorController {
     }
 
     @GetMapping("/{id}/tatuajes")
-    public List<Tatuaje> obtenerTatuajesPorAutorId(@PathVariable Long id) {
-        return tatuajeService.obtenerPorAutorId(id);
+    public ResponseEntity<?> obtenerTatuajesPorAutorId(@PathVariable Long id) {
+        return ResponseEntity.ok(tatuajeService.obtenerPorAutorId(id));
     }
 
     @GetMapping("/{id}/disenyos")
-    public List<Disenyo> obtenerDisenyosPorAutorId(@PathVariable Long id) {
-        return disenyoService.obtenerDisenyosPorAutorId(id);
+    public ResponseEntity<?> obtenerDisenyosPorAutorId(@PathVariable Long id) {
+        return ResponseEntity.ok(disenyoService.obtenerDisenyosPorAutorId(id));
     }
 
     @GetMapping("/{id}/pedidos")
