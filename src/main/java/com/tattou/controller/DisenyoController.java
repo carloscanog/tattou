@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,9 +50,11 @@ public class DisenyoController {
         this.tatuadorService = tatuadorService;
     }
 
-    @GetMapping
-    public List<Disenyo> obtenerDisenyos() {
-        return disenyoService.obtenerDisenyos();
+    @GetMapping("/muro")
+    public ResponseEntity<?> obtenerDisenyos() {
+        List<Disenyo> lista = disenyoService.obtenerDisenyos();
+        Collections.shuffle(lista);
+        return ResponseEntity.ok(lista);
     }
 
     @GetMapping("/{id}")
