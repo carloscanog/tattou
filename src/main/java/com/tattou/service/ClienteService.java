@@ -13,7 +13,7 @@ public interface ClienteService {
 
     Optional<Cliente> obtenerClientePorUsuarioId(Long usuarioId);
 
-    Cliente crearCliente(Cliente cliente);
+    Cliente guardar(Cliente cliente);
     
     void eliminarClientePorId(Long id);
 
