@@ -19,7 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 import com.tattou.dto.TatuadorRegistroRequest;
 import com.tattou.model.Pedido;
 import com.tattou.model.Tatuador;
-import com.tattou.model.Tatuaje;
 import com.tattou.model.Usuario;
 import com.tattou.service.ClienteService;
 import com.tattou.service.DisenyoService;

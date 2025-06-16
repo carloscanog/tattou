@@ -1,20 +1,37 @@
 package com.tattou.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.tattou.model.Cliente;
+import com.tattou.model.Disenyo;
 import com.tattou.model.Pedido;
+import com.tattou.model.Usuario;
+import com.tattou.repository.ClienteRepository;
+import com.tattou.repository.DisenyoRepository;
 import com.tattou.repository.PedidoRepository;
+import com.tattou.repository.UsuarioRepository;
 
 @Service
 public class PedidoServiceImpl implements PedidoService {
 
     private PedidoRepository pedidoRepository;
 
-    public PedidoServiceImpl(PedidoRepository pedidoRepository) {
+    private DisenyoRepository disenyoRepository;
+
+    private UsuarioRepository usuarioRepository;
+
+    private ClienteRepository clienteRepository;
+
+    public PedidoServiceImpl(PedidoRepository pedidoRepository, DisenyoRepository disenyoRepository,
+        ClienteRepository clienteRepository, UsuarioRepository usuarioRepository) {
         this.pedidoRepository = pedidoRepository;
+        this.disenyoRepository = disenyoRepository;
+        this.clienteRepository = clienteRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Override
@@ -45,6 +62,25 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public Pedido crearPedido(Pedido pedido) {
         return pedidoRepository.save(pedido);
+    }
+
+    public void crearPedidoTrasPagoExitoso(Long disenyoId, String clienteEmail) {
+        Disenyo disenyo = disenyoRepository.findById(disenyoId)
+            .orElseThrow(() -> new RuntimeException("Diseño no encontrado"));
+
+        Usuario usuario = usuarioRepository.findByEmail(clienteEmail)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        Cliente cliente = clienteRepository.findByUsuarioId(usuario.getId())
+            .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+        Pedido pedido = new Pedido();
+        pedido.setDisenyo(disenyo);
+        pedido.setComprador(cliente);
+        pedido.setVendedor(disenyo.getAutor());
+        pedido.setFecha(LocalDateTime.now());
+
+        pedidoRepository.save(pedido);
     }
 
 }

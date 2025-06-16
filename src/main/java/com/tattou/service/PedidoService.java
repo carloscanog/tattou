@@ -19,4 +19,6 @@ public interface PedidoService {
 
     Pedido crearPedido(Pedido pedido);
 
+    void crearPedidoTrasPagoExitoso(Long disenyoId, String clienteEmail);
+
 }

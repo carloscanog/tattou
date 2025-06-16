@@ -38,6 +38,8 @@ public class SecurityConfig {
                     "/clientes/registro",
                     "/tatuadores/registro",
                     "/usuarios/email/**",
+                    "/stripe/create-checkout-session",
+                    "/stripe/webhook",
                     "/uploads/**"
                 ).permitAll()
                 .requestMatchers(HttpMethod.POST, "/tatuajes").hasRole("ROL_TATUADOR")
