@@ -13,7 +13,7 @@ public interface TatuajeService {
     
     List<Tatuaje> obtenerPorAutorId(Long id);
 
-    Tatuaje crearTatuaje(Tatuaje tatuaje);
+    Tatuaje guardarTatuaje(Tatuaje tatuaje);
 
     void eliminarTatuajePorId(Long id);
 

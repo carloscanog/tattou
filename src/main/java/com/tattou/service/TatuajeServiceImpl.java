@@ -33,7 +33,7 @@ public class TatuajeServiceImpl implements TatuajeService {
     }
 
     @Override
-    public Tatuaje crearTatuaje(Tatuaje tatuaje) {
+    public Tatuaje guardarTatuaje(Tatuaje tatuaje) {
         return tatuajeRepository.save(tatuaje);
     }
 

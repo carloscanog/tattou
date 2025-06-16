@@ -30,7 +30,7 @@ public class Disenyo {
     @ElementCollection
     private List<String> etiquetas;
 
-    private float precio;
+    private Float precio;
 
     private String imagen;
 

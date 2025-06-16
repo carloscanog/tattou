@@ -1,7 +1,5 @@
 package com.tattou.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,13 +10,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.tattou.dto.TatuadorRegistroRequest;
-import com.tattou.model.Disenyo;
 import com.tattou.model.Pedido;
 import com.tattou.model.Tatuador;
 import com.tattou.model.Tatuaje;
@@ -34,7 +32,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/tatuadores")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200")
 public class TatuadorController {
 
     private final TatuadorService tatuadorService;
@@ -66,6 +64,7 @@ public class TatuadorController {
     }
 
     @PostMapping("/registro")
+    @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
     public ResponseEntity<Tatuador> completarRegistroTatuador(@Valid @RequestBody TatuadorRegistroRequest dto) {
         Usuario usuario = usuarioService.obtenerUsuarioPorId(dto.getUsuarioId())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
@@ -80,29 +79,23 @@ public class TatuadorController {
         Tatuador tatuador = new Tatuador();
         tatuador.setUsuario(usuario);
         tatuador.setBiografia(dto.getBiografia());
-
-        // Se sustituyen las posibles comas por no caracteres
-        String estilosDto = dto.getEstilos().replace(",", " ").replace(".", " ")
-            .replace("  ", " ").replace("  ", " ");
-        // Se separa la cadena recogida por espacios, y el array generado se convierte en una lista
-        List<String> estilos = new ArrayList<String>(Arrays.asList(estilosDto.split(" ")));
-        tatuador.setEstilos(estilos);
+        tatuador.setEstilos(dto.getEstilos());
         tatuador.setInstagram(dto.getInstagram());
         tatuador.setTiktok(dto.getTiktok());
         tatuador.setUbicacion(dto.getUbicacion());
 
-        Tatuador guardado = tatuadorService.crearTatuador(tatuador);
+        Tatuador guardado = tatuadorService.guardar(tatuador);
         return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
     }
 
     @GetMapping("/{id}/tatuajes")
-    public List<Tatuaje> obtenerTatuajesPorAutorId(@PathVariable Long id) {
-        return tatuajeService.obtenerPorAutorId(id);
+    public ResponseEntity<?> obtenerTatuajesPorAutorId(@PathVariable Long id) {
+        return ResponseEntity.ok(tatuajeService.obtenerPorAutorId(id));
     }
 
     @GetMapping("/{id}/disenyos")
-    public List<Disenyo> obtenerDisenyosPorAutorId(@PathVariable Long id) {
-        return disenyoService.obtenerDisenyosPorAutorId(id);
+    public ResponseEntity<?> obtenerDisenyosPorAutorId(@PathVariable Long id) {
+        return ResponseEntity.ok(disenyoService.obtenerDisenyosPorAutorId(id));
     }
 
     @GetMapping("/{id}/pedidos")
@@ -122,7 +115,7 @@ public class TatuadorController {
 
     @PostMapping
     public Tatuador crear(@RequestBody Tatuador tatuador) {
-        return tatuadorService.crearTatuador(tatuador);
+        return tatuadorService.guardar(tatuador);
     }
 
     @DeleteMapping("/{id}")
@@ -130,4 +123,15 @@ public class TatuadorController {
         tatuadorService.eliminarTatuadorPorId(id);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Tatuador> actualizarTatuador(@PathVariable Long id, @RequestBody Tatuador datos) {
+        Tatuador tatuador = tatuadorService.obtenerTatuadorPorId(id).get();
+        tatuador.setBiografia(datos.getBiografia());
+        tatuador.setUbicacion(datos.getUbicacion());
+        tatuador.setInstagram(datos.getInstagram());
+        tatuador.setTiktok(datos.getTiktok());
+        tatuador.setEstilos(datos.getEstilos());
+        return ResponseEntity.ok(tatuadorService.guardar(tatuador));
+    }
+    
 }

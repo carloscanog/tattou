@@ -13,8 +13,14 @@ public interface UsuarioService {
 
     Optional<Usuario> obtenerUsuarioPorEmail(String email);
 
-    Usuario crearUsuario(Usuario usuario);
+    Usuario guardar(Usuario usuario);
 
     void eliminarUsuarioPorId(Long id);
+
+    void eliminarUsuarioPorEmail(String email);
+
+    boolean esRegistradoComoTatuador(Usuario usuario);
+
+    boolean esRegistradoComoCliente(Usuario usuario);
 
 }
