@@ -65,15 +65,19 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     public void crearPedidoTrasPagoExitoso(Long disenyoId, String clienteEmail) {
+        // Busca el disenyo por el id
         Disenyo disenyo = disenyoRepository.findById(disenyoId)
             .orElseThrow(() -> new RuntimeException("Diseño no encontrado"));
 
+        // Busca el usuario por el email
         Usuario usuario = usuarioRepository.findByEmail(clienteEmail)
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
+        // Busca el cliente por el id de usuario
         Cliente cliente = clienteRepository.findByUsuarioId(usuario.getId())
             .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
 
+        // Crea el pedido con la fecha actual
         Pedido pedido = new Pedido();
         pedido.setDisenyo(disenyo);
         pedido.setComprador(cliente);
