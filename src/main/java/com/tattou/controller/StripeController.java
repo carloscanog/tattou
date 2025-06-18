@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,14 +31,16 @@ public class StripeController {
     @PostMapping("/create-checkout-session")
     public ResponseEntity<Map<String, String>> createCheckoutSession(
             @RequestBody Map<String, Object> body,
-            HttpServletRequest request) throws StripeException {
+            HttpServletRequest request,
+            Authentication auth) throws StripeException {
 
         Long disenyoId = Long.valueOf(body.get("disenyoId").toString());
-        String successUrl = "http://localhost:4200/compra-exitosa"; // URL de compra exitosa
+        String successUrl = "http://localhost:4200/compra-exitosa";  // URL de compra exitosa
         String cancelUrl = "http://localhost:4200/compra-cancelada"; // URL de compra cancelada
+        String clienteEmail = auth.getName();
 
         // Crea la sesion con el id del disenyo y las url de compra exitosa y cancelada
-        Session session = stripeService.createCheckoutSession(disenyoId, successUrl, cancelUrl);
+        Session session = stripeService.createCheckoutSession(disenyoId, successUrl, cancelUrl, clienteEmail);
 
         Map<String, String> responseData = new HashMap<>();
         responseData.put("url", session.getUrl());

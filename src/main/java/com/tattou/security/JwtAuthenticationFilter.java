@@ -60,13 +60,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // Carga el usuario y crea una Authentication con authorities
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
-                System.out.println("Authorities: " + userDetails.getAuthorities());
-
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
-                                userDetails,                       // principal
-                                null,                              // credentials
-                                userDetails.getAuthorities());     // roles / authorities
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities());
 
                 authentication.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));

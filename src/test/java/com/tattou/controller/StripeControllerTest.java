@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.Assert;
 
 import com.stripe.model.checkout.Session;
@@ -31,12 +32,13 @@ public class StripeControllerTest {
     public void createCheckoutSessionTest() {
         Map<String, Object> body = new HashMap<>();
         body.put("disenyoId", 1L);
+        String email = "email";
 
         Session session = mock(Session.class);
         try {
             when(stripeService.createCheckoutSession(1L,
                 "http://localhost:4200/compra-exitosa",
-                "http://localhost:4200/compra-cancelada")).thenReturn(session);
+                "http://localhost:4200/compra-cancelada", email)).thenReturn(session);
         } catch (Exception e) {
             Assert.notNull(stripeController, "error");
         }
@@ -45,8 +47,11 @@ public class StripeControllerTest {
 
         Object result = null;
 
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getName()).thenReturn(email);
+
         try {
-            result = stripeController.createCheckoutSession(body, request);
+            result = stripeController.createCheckoutSession(body, request, authentication);
         } catch (Exception e) {
             Assert.notNull(stripeController, "error");
         }

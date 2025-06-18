@@ -31,7 +31,7 @@ public class StripeService {
         Stripe.apiKey = stripeApiKey;
     }
 
-    public Session createCheckoutSession(Long disenyoId, String successUrl, String cancelUrl) throws StripeException {
+    public Session createCheckoutSession(Long disenyoId, String successUrl, String cancelUrl, String clienteEmail) throws StripeException {
         // Recupera los datos del diseño
         Disenyo disenyo = disenyoRepository.findById(disenyoId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Diseño no encontrado"));
@@ -59,6 +59,7 @@ public class StripeService {
             .setCancelUrl(cancelUrl)
             .addAllLineItem(lineItems)
             .putMetadata("disenyoId", String.valueOf(disenyoId))
+            .putMetadata("clienteEmail", clienteEmail)
             .build();
 
         return Session.create(params);

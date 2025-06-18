@@ -68,7 +68,7 @@ public class StripeWebhookController {
                 // Se obtiene el id del disenyo desde los metadatos enviados
                 String disenyoId = session.getMetadata().get("disenyoId");
                 // Se obtiene el email del cliente desde los metadatos enviados
-                String clienteEmail = session.getCustomerDetails().getEmail();
+                String clienteEmail = session.getMetadata().get("clienteEmail");
 
                 // Llamada al servicio encargado de la creacion del pedido
                 pedidoService.crearPedidoTrasPagoExitoso(Long.valueOf(disenyoId), clienteEmail);

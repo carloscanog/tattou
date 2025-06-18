@@ -48,7 +48,7 @@ public class UsuarioController {
     @PostMapping("/registro")
     @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
     public ResponseEntity<?> registrarUsuario(@Valid @RequestBody UsuarioRegistroRequest dto) {
-        // Lo primero es comprobar que no haya ningun usuario con el mismo email registrado
+        // Se comprueba que no haya ningun usuario con el mismo email registrado
         if (usuarioService.obtenerUsuarioPorEmail(dto.getEmail()).isPresent()) {
             return ResponseEntity
                 .status(HttpStatus.CONFLICT)
